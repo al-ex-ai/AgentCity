@@ -1,0 +1,36 @@
+{
+  "name": "agent-city",
+  "version": "0.1.0",
+  "description": "A 3D city of your codebase that shows where coding agents write your code and what that code costs you afterwards.",
+  "license": "MIT",
+  "author": "Alex Husniddinov",
+  "type": "module",
+  "bin": {
+    "agent-city": "bin/agent-city.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "viewer",
+    "docs",
+    "LICENSE",
+    "README.md",
+    "VISION.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/",
+    "analyze": "node bin/agent-city.js --no-open"
+  },
+  "keywords": [
+    "code-city",
+    "visualization",
+    "git",
+    "ai",
+    "coding-agents",
+    "attribution",
+    "threejs"
+  ]
+}
