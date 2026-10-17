@@ -21,9 +21,16 @@ onLoad.push(({ data, showFile }) => {
   const byType = Object.fromEntries(TYPES.map(t => [t.type, data.insights.filter((/** @type {any} */ i) => i.type === t.type)]));
   const fileOf = new Map(data.files.map((/** @type {any} */ f) => [f.path, f]));
 
-  verdicts.innerHTML = TYPES.map(t => {
+  const noRecords = data.totals.covered === 0;
+  const emptyOf = (/** @type {typeof TYPES[number]} */ t) => (noRecords ? 'No agent records in this repository.' : t.empty);
+  if (noRecords) {
+    verdicts.innerHTML = `<div class="verdict wide">
+      <span class="q"><i style="background:var(--unknown)"></i>No agent records found</span>
+      <span class="a">This repository has no git-ai notes, no AI co-author trailers, and no Claude Code transcripts on the machine that analyzed it, so every building is grey and there are no findings. The city still shows size and how often each file changes. To see agent work: use <a href="https://github.com/git-ai-project/git-ai" target="_blank" rel="noopener">git-ai</a>, keep AI co-author trailers in commits, or run <code>agent-city</code> on a local checkout where Claude Code did the work.</span>
+    </div>`;
+  } else verdicts.innerHTML = TYPES.map(t => {
     const top = byType[t.type][0];
-    const body = top ? `<code>${esc(short(top.path))}</code>. ${esc(top.summary)}` : esc(t.empty);
+    const body = top ? `<code>${esc(short(top.path))}</code>. ${esc(top.summary)}` : esc(emptyOf(t));
     return `<button type="button" class="verdict" data-type="${t.type}" data-index="0"${top ? '' : ' disabled'}>
       <span class="q"><i style="background:${t.color}"></i>${esc(t.question)}</span>
       <span class="a">${body}</span>
@@ -55,7 +62,7 @@ onLoad.push(({ data, showFile }) => {
           <span class="path" title="${esc(f.path)}">${esc(f.path || 'Whole repository')}</span>
           <span class="sum">${esc(f.summary)}</span>
         </button></li>`).join('')
-      : `<li class="none">${esc(t.empty)}</li>`;
+      : `<li class="none">${esc(emptyOf(t))}</li>`;
     evidence.hidden = true;
   }
 
