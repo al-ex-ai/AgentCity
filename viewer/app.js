@@ -140,7 +140,21 @@ async function boot() {
     render(await res.json());
   } catch (e) {
     showError(/** @type {Error} */ (e).message.startsWith('Could not') || (e instanceof Error && e.message.startsWith('Unsupported')) ? e.message : '');
+    showGallery();
   }
+}
+
+async function showGallery() {
+  try {
+    const res = await fetch('./gallery/index.json');
+    if (!res.ok) return;
+    const items = await res.json();
+    $('gallery-list').innerHTML = items.map((/** @type {any} */ g) => `<li><a href="?city=gallery/${encodeURIComponent(g.file)}">
+      <b>${esc(g.title)}</b>
+      <span>${esc(g.files)} files · ${esc(g.commits)} commits${g.agentShare === null ? '' : ` · ${esc(g.agentShare)}% agent-assisted where recorded`}</span>
+      <small>${esc(g.note)}</small></a></li>`).join('');
+    $('gallery').hidden = items.length === 0;
+  } catch { /* no gallery on this host */ }
 }
 
 boot();
