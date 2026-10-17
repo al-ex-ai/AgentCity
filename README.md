@@ -2,6 +2,10 @@
 
 A 3D city of your codebase that shows where coding agents write your code, and what that code costs you afterwards: where to review harder, where agents struggle, and where tests are missing.
 
+**Live demo: [agentcity.al-ex.ai](https://agentcity.al-ex.ai)**
+
+![git-truck as a city, colored by how much of each file's history came after the team adopted coding agents](docs/screenshot.png)
+
 Files are buildings, folders are districts. Footprint is lines of code, height is how often the file changes, and color is the share of changes that were agent-assisted.
 
 ```
@@ -60,7 +64,7 @@ agent-city [repo] [options]
 
 ## Viewer only
 
-The viewer is a static site in [`viewer/`](viewer). Open any `city.json` with the button or by dropping the file, or link to one with `?city=<url>`. With no file, it shows a gallery of example cities.
+The viewer is a static site in [`viewer/`](viewer). Open any `city.json` with the button or by dropping the file, or link to one with `?city=<url>`. With no file, it shows the landing page and example cities. [agentcity.al-ex.ai](https://agentcity.al-ex.ai) serves this folder as is; [`deploy/`](deploy) has the git hook that publishes it.
 
 ## The city.json format
 

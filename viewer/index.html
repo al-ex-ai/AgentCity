@@ -14,16 +14,49 @@
 <body>
   <div class="app">
     <header class="top">
-      <div class="brand">
+      <a class="brand" href="./" aria-label="Agent City home">
         <span class="mark" aria-hidden="true"></span>
         <span>Agent City</span>
-      </div>
+      </a>
       <div class="repo" id="repo"></div>
       <div class="actions">
         <label class="btn" for="file">Open city.json</label>
         <input id="file" type="file" accept=".json,application/json" hidden>
       </div>
     </header>
+
+    <section class="landing" id="landing" hidden>
+      <div class="hero">
+        <h1>See where agents write your code, and what it costs you.</h1>
+        <p class="pitch">Agent City turns a git repository into a 3D city. Files are buildings, folders are districts, height is how often a file changes. It shows where to review harder, what keeps getting reworked, where tests are missing, what only one person knows, and what changed since your team started using coding agents.</p>
+        <div class="cmd">
+          <code id="cmd">npx agent-city .</code>
+          <button type="button" class="btn" id="copy">Copy</button>
+        </div>
+        <p class="small">Runs on your machine and opens the city in your browser. Nothing is uploaded. Works on any git repository; agent records from Claude Code, Copilot, Cursor, Aider, Devin and git-ai add the agent view.</p>
+        <p class="err" id="err" hidden></p>
+      </div>
+      <div class="examples" id="gallery" hidden>
+        <h2>Explore an example</h2>
+        <ul id="gallery-list"></ul>
+      </div>
+      <div class="questions">
+        <h2>What it answers</h2>
+        <ol>
+          <li><b>Where do we need stricter review?</b> Large files that change often, weighted by agent share when records exist.</li>
+          <li><b>What keeps getting reworked?</b> Files that need follow-up commits within 48 hours, overall and after agent changes.</li>
+          <li><b>Where is the verifier missing?</b> Source files that change while their tests never do.</li>
+          <li><b>What does only one person know?</b> Code with a single author, or written by agents with one human.</li>
+          <li><b>What changed since agents arrived?</b> Pace, change size, follow-ups and test habits before and after the first agent instruction file.</li>
+        </ol>
+      </div>
+      <div class="own">
+        <h2>Already have a city.json?</h2>
+        <p>Open it here, or drop it anywhere on the page. The viewer runs in your browser.</p>
+        <label class="btn primary" for="file">Open city.json</label>
+      </div>
+      <p class="credit">Open source, MIT license. <a href="https://github.com/al-ex-ai/AgentCity" rel="noopener">Source on GitHub</a> · Built by <a href="https://al-ex.ai" rel="noopener">Alex Husniddinov</a></p>
+    </section>
 
     <section class="verdicts" id="verdicts" aria-label="Key findings"></section>
 
@@ -38,16 +71,6 @@
         </div>
         <div class="legend" id="legend"></div>
         <div class="tip" id="tip" hidden></div>
-        <div class="empty" id="empty" hidden>
-          <h1>Open a city</h1>
-          <p>Run <code>npx agent-city &lt;repo&gt;</code> to analyze a repository, then open the <code>city.json</code> it writes. You can also drop the file here.</p>
-          <label class="btn primary" for="file">Open city.json</label>
-          <p class="err" id="err" hidden></p>
-          <div class="gallery" id="gallery" hidden>
-            <h2>Or explore an example</h2>
-            <ul id="gallery-list"></ul>
-          </div>
-        </div>
       </div>
       <aside class="side" id="side" aria-label="Insights"></aside>
     </main>

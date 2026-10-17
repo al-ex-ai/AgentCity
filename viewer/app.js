@@ -60,7 +60,7 @@ function placeTip(/** @type {number} */ x, /** @type {number} */ y) {
 
 function render(/** @type {any} */ d) {
   data = validate(d);
-  $('empty').hidden = true;
+  setMode('city');
   stage.querySelectorAll('canvas, .lbl').forEach(n => n.remove());
   city = createCity(stage, data);
   const r = data.repo;
@@ -113,8 +113,15 @@ document.querySelector('.layers')?.addEventListener('click', e => {
   setLegend(layer);
 });
 
+function setMode(/** @type {'city'|'landing'} */ mode) {
+  const landing = mode === 'landing';
+  $('landing').hidden = !landing;
+  for (const sel of ['.main', '#verdicts', '#foot']) /** @type {HTMLElement} */ (document.querySelector(sel)).hidden = landing;
+  document.body.classList.toggle('is-landing', landing);
+}
+
 function showError(/** @type {string} */ msg) {
-  $('empty').hidden = false;
+  setMode('landing');
   const err = $('err');
   err.textContent = msg;
   err.hidden = !msg;
@@ -159,10 +166,18 @@ async function showGallery() {
     const items = await res.json();
     $('gallery-list').innerHTML = items.map((/** @type {any} */ g) => `<li><a href="?city=gallery/${encodeURIComponent(g.file)}">
       <b>${esc(g.title)}</b>
-      <span>${esc(g.files)} files · ${esc(g.commits)} commits${g.agentShare === null ? '' : ` · ${esc(g.agentShare)}% agent-assisted where recorded`}</span>
+      <span>${esc(g.files)} files · ${esc(g.commits)} commits · ${g.agentCommits ? `${esc(g.agentCommits)} with agent records` : 'no agent records'}</span>
       <small>${esc(g.note)}</small></a></li>`).join('');
     $('gallery').hidden = items.length === 0;
   } catch { /* no gallery on this host */ }
 }
+
+$('copy').addEventListener('click', async () => {
+  const text = $('cmd').textContent || '';
+  const btn = $('copy');
+  try { await navigator.clipboard.writeText(text); btn.textContent = 'Copied'; }
+  catch { getSelection()?.selectAllChildren($('cmd')); btn.textContent = 'Press Ctrl+C'; }
+  setTimeout(() => { btn.textContent = 'Copy'; }, 1800);
+});
 
 boot();

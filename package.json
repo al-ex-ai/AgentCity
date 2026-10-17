@@ -4,6 +4,14 @@
   "description": "A 3D city of your codebase that shows where coding agents write your code and what that code costs you afterwards.",
   "license": "MIT",
   "author": "Alex Husniddinov",
+  "homepage": "https://agentcity.al-ex.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/al-ex-ai/AgentCity.git"
+  },
+  "bugs": {
+    "url": "https://github.com/al-ex-ai/AgentCity/issues"
+  },
   "type": "module",
   "bin": {
     "agent-city": "bin/agent-city.js"
@@ -12,10 +20,12 @@
     "bin",
     "src",
     "viewer",
+    "!viewer/gallery",
     "docs",
     "LICENSE",
     "README.md",
-    "VISION.md"
+    "VISION.md",
+    "CHANGELOG.md"
   ],
   "engines": {
     "node": ">=22.4"

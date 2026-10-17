@@ -27,7 +27,7 @@ for (const e of entries) {
     note: e.note,
     files: city.totals.files,
     commits: city.totals.commits,
-    agentShare: city.totals.covered ? Math.round((city.totals.agent / city.totals.covered) * 100) : null,
+    agentCommits: city.commits.filter((/** @type {any} */ c) => c.agent).length,
     generatedAt: city.generatedAt,
   });
 }

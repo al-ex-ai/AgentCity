@@ -4,5 +4,11 @@
     "source": "https://github.com/git-truck/git-truck.git",
     "title": "git-truck",
     "note": "Open source git visualizer. Attribution from Copilot coding agent trailers."
+  },
+  {
+    "file": "express.city.json",
+    "source": "https://github.com/expressjs/express.git",
+    "title": "Express",
+    "note": "The Node.js web framework: 5,700 commits since 2009. Shows the all-changes view on a large, mostly human history."
   }
 ]

@@ -5,7 +5,16 @@
     "note": "Open source git visualizer. Attribution from Copilot coding agent trailers.",
     "files": 188,
     "commits": 2237,
-    "agentShare": 100,
-    "generatedAt": "2026-10-17T22:38:11.868Z"
+    "agentCommits": 18,
+    "generatedAt": "2026-10-17T23:14:57.608Z"
+  },
+  {
+    "file": "express.city.json",
+    "title": "Express",
+    "note": "The Node.js web framework: 5,700 commits since 2009. Shows the all-changes view on a large, mostly human history.",
+    "files": 211,
+    "commits": 5697,
+    "agentCommits": 4,
+    "generatedAt": "2026-10-17T23:15:03.213Z"
   }
 ]

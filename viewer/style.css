@@ -68,17 +68,28 @@ code { font-family: var(--mono); font-size: .92em; }
 .tip .row { display: flex; justify-content: space-between; gap: 16px; color: var(--muted); }
 .tip .row span:last-child { color: var(--fg); font-variant-numeric: tabular-nums; }
 
-.empty { position: absolute; inset: 0; z-index: 4; display: grid; place-content: center; justify-items: center; gap: 12px; padding: 24px; text-align: center; background: var(--bg); }
-.empty h1 { margin: 0; font-size: 22px; font-weight: 600; }
-.empty p { margin: 0; max-width: 46ch; color: var(--muted); }
 .err { color: var(--rework) !important; }
-.gallery { display: grid; gap: 8px; margin-top: 12px; width: min(520px, 100%); text-align: left; }
-.gallery h2 { margin: 0; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.gallery ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.gallery a { display: grid; gap: 2px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); color: var(--fg); text-decoration: none; }
-.gallery a:hover, .gallery a:focus-visible { border-color: var(--agent); outline: none; }
-.gallery span { font: 12px var(--mono); color: var(--muted); }
-.gallery small { font-size: 12px; color: var(--muted); }
+.brand { color: var(--fg); text-decoration: none; }
+.landing { display: grid; gap: 28px; max-width: 980px; width: 100%; margin: 0 auto; padding-block: 24px 8px; }
+.hero { display: grid; gap: 14px; }
+.hero h1 { margin: 0; font-size: clamp(28px, 4.4vw, 46px); line-height: 1.08; font-weight: 600; letter-spacing: -.01em; text-wrap: balance; max-width: 22ch; }
+.pitch { margin: 0; font-size: 17px; line-height: 1.55; color: var(--muted); max-width: 68ch; }
+.cmd { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px 10px 10px 16px; width: fit-content; max-width: 100%; }
+.cmd code { font-size: 16px; color: var(--agent); overflow-wrap: anywhere; }
+.small { margin: 0; font-size: 13px; color: var(--muted); max-width: 72ch; }
+.landing h2 { margin: 0 0 10px; font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.examples ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.examples a { display: grid; gap: 4px; height: 100%; padding: 14px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--fg); text-decoration: none; }
+.examples a:hover, .examples a:focus-visible { border-color: var(--agent); outline: none; }
+.examples b { font-size: 16px; }
+.examples span { font: 12px var(--mono); color: var(--muted); }
+.examples small { font-size: 13px; color: var(--muted); }
+.questions ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; color: var(--muted); max-width: 80ch; }
+.questions b { color: var(--fg); font-weight: 600; }
+.own p { margin: 0 0 12px; color: var(--muted); }
+.credit { margin: 0; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+.credit a { color: var(--fg); }
+body.is-landing .repo { visibility: hidden; }
 
 .side { display: grid; gap: 10px; align-content: start; min-width: 0; max-height: min(72vh, 820px); overflow: auto; }
 @media (max-width: 960px) { .side { max-height: none; } }
