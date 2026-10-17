@@ -69,7 +69,7 @@ Which sources contributed, and what period they cover.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `sources[].id` | string | `git-ai`, `agent-trace`, `claude-transcript` or `trailer` |
+| `sources[].id` | string | `git-ai`, `claude-transcript` or `trailer`. `agent-trace` is reserved for when that spec settles on a storage location |
 | `sources[].commits` | number | Commits attributed by this source |
 | `sources[].edits` | number | For transcripts, agent file edits found inside the repository |
 | `sources[].from`, `to` | string | Time range the source covers |
