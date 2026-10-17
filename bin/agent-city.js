@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { analyze, serialize, VERSION } from '../src/analyze.js';
 import { attribute } from '../src/attribution.js';
 import { computeInsights } from '../src/insights.js';
+import { detectAdoption } from '../src/adoption.js';
 import { serve } from '../src/serve.js';
 
 const HELP = `agent-city ${VERSION}
@@ -113,6 +114,7 @@ async function main() {
   const transcripts = clone || o['no-transcripts'] ? false : o.transcripts;
   await attribute(city, { repoAbs, transcripts });
   computeInsights(city);
+  detectAdoption(city);
   const json = serialize(city);
 
   if (clone && !o['keep-clone']) fs.rmSync(clone, { recursive: true, force: true });

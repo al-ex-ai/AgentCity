@@ -6,7 +6,7 @@ import { layoutCity } from './layout.js';
 
 export const VERSION = '0.1.0';
 
-export const FLAG = { AGENT: 1, COVERED: 2, REWORK: 4, TEST_CHANGED: 8 };
+export const FLAG = { AGENT: 1, COVERED: 2, REWORK: 4, TEST_CHANGED: 8, FOLLOW_UP: 16 };
 
 /**
  * @typedef {{
@@ -85,6 +85,7 @@ export async function analyze(repo, opts = {}) {
       covered: 0,
       agent: 0,
       rework: 0,
+      followUps: 0,
       isTest: isTest(p),
       test: tests.get(p) || null,
       log: s ? s.log : [],
@@ -109,6 +110,7 @@ export async function analyze(repo, opts = {}) {
     },
     params,
     attribution: { sources: [], coveredFrom: null },
+    adoption: null,
     totals: totals(files, commits.length),
     layout: { size: layout.size, districts: layout.districts },
     commits,
