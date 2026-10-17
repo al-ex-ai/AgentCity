@@ -148,8 +148,8 @@ export function createCity(stage, data) {
       outline(focus, i);
       const g = geom[i];
       const target = new THREE.Vector3(g.x, g.h / 2, g.z);
-      const dist = Math.max(4, g.h * 1.6 + 3);
-      flyTo(target.clone().add(new THREE.Vector3(-0.55, 0.6, 0.8).multiplyScalar(dist)), target);
+      const dist = Math.max(5, g.h * 1.5 + 4);
+      flyTo(target.clone().add(new THREE.Vector3(-0.45, 0.85, 0.6).normalize().multiplyScalar(dist)), target);
       return;
     }
     outline(focus, -1);

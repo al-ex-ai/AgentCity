@@ -1,6 +1,7 @@
 // Entry point: load city.json, build the scene, wire hover, layers and file loading.
 import { createCity } from './scene.js';
 import { onLoad } from './bus.js';
+import './panels.js';
 
 const $ = (/** @type {string} */ id) => /** @type {HTMLElement} */ (document.getElementById(id));
 const stage = $('stage');
