@@ -128,7 +128,8 @@ async function main() {
   if (!o.serve) return;
   const viewerDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'viewer');
   const port = o.port ? Number(o.port) : 0;
-  const { url } = await serve(viewerDir, json, port);
+  const { url: base } = await serve(viewerDir, json, port);
+  const url = `${base}?city=city.json`;
   log(`Viewer running at ${url}  (Ctrl+C to stop)`);
   if (o.open) openBrowser(url);
 }

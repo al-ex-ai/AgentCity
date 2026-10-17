@@ -148,7 +148,8 @@ addEventListener('drop', e => {
 
 async function boot() {
   const param = new URLSearchParams(location.search).get('city');
-  const url = param || './city.json';
+  if (!param) { showError(''); showGallery(); return; }
+  const url = param;
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error(param ? `Could not load ${param} (HTTP ${res.status}).` : '');
