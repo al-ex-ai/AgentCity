@@ -57,7 +57,7 @@ viewer    ── 3D city, insight panels, fly-to findings
 ### Attribution sources, most precise first
 
 1. git-ai notes (`refs/notes/ai`): per line, per agent and model
-2. Agent Trace records: per range, vendor-neutral
+2. Agent Trace records: per range, vendor-neutral (planned; the v0.1 spec does not fix a storage location yet)
 3. Claude Code transcripts on the local machine: per file edit, with timestamps
 4. Commit trailers (`Co-Authored-By: Claude`, Copilot, Cursor, Aider and similar): per commit
 5. None of the above: "no record"
@@ -98,16 +98,16 @@ For a repository given by URL, only sources 1, 2 and 4 exist. Transcripts live o
 
 Each step is its own commit.
 
-1. Vision, license, repo skeleton
-2. `city.json` format spec
-3. Analyzer: git history, sizes, treemap layout
-4. Attribution: trailers and Claude Code transcripts, then git-ai notes
-5. Insights 1, 2 and 4 computed in the analyzer
-6. Viewer: city, hover, color layers
-7. Viewer: insight panels with fly-to and commit evidence
-8. CLI: path or URL, clone, analyze, serve, open
-9. Static viewer site and gallery
-10. First public release
+1. Vision, license, repo skeleton (done)
+2. `city.json` format spec (done)
+3. Analyzer: git history, sizes, treemap layout (done)
+4. Attribution: trailers and Claude Code transcripts, then git-ai notes (done)
+5. Insights 1, 2 and 4 computed in the analyzer (done)
+6. Viewer: city, hover, color layers (done)
+7. Viewer: insight panels with fly-to and commit evidence (done)
+8. CLI: path or URL, clone, analyze, serve, open (done)
+9. Static viewer site and gallery (done)
+10. First public release (waiting for approval to create the GitHub repo and publish to npm)
 
 ## Success test
 
