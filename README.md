@@ -17,11 +17,15 @@ Every view is there to support a decision.
 
 | Question | Signal | What you can do |
 |---|---|---|
-| **Where do we need stricter review?** | Large files that change often, mostly through agent commits | Add owners or a second reviewer there |
-| **Where do agents struggle?** | Commits to the same file within 48 hours of an agent-assisted commit | Improve the agent's context for that area, or stop delegating it |
-| **Where is the verifier missing?** | Agent-changed source files whose test never changed alongside them, or that have no test | Write the tests before delegating more |
+| **Where do we need stricter review?** | Large files that change often | Add owners or a second reviewer there |
+| **What keeps getting reworked? Where do agents struggle?** | Commits to the same file within 48 hours of the previous one, or of an agent-assisted one | Improve the agent's context for that area, or stop delegating it |
+| **Where is the verifier missing?** | Source files whose test never changes alongside them, or that have no test | Write the tests before delegating more |
+| **What does only one person know?** | Files a single person changed, or that agents wrote with one human | Assign a second owner, run a walkthrough |
+| **What changed since agents arrived?** | Pace, change size, follow-ups and test habits before and after the first agent instruction file (`CLAUDE.md`, `AGENTS.md`, `.cursor/`, Copilot instructions and others) | Check whether adoption is improving the work or just speeding it up |
 
-Click a finding to fly to the building and see the commits behind it. Switch the color layer between agent share, rework and verifier.
+Every insight works on all changes, so a repository with no agent records still gets findings. When agent records exist, switch to **Agent changes** to see the same questions for agent-assisted work only.
+
+Click a finding to fly to the building and see the commits behind it. Color layers: agent share, rework, verifier, owners, and "since agents".
 
 See [VISION.md](VISION.md) for the full set of questions planned.
 

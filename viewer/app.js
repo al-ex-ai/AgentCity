@@ -9,10 +9,15 @@ const tip = $('tip');
 const fmtDate = (/** @type {string|null} */ s) => (s ? new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'n/a');
 const esc = (/** @type {any} */ s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] || c));
 
+/** @type {Record<string, (scope: string) => string[][]>} */
 const LEGENDS = {
-  agent: [['linear-gradient(90deg,var(--human),var(--agent))', 'human → agent-assisted, of recorded changes'], ['var(--unknown)', 'no record']],
-  rework: [['linear-gradient(90deg,var(--human),var(--rework))', 'follow-ups per agent commit (red ≥ 1.5)'], ['var(--unknown)', 'no agent changes']],
-  verifier: [['linear-gradient(90deg,var(--human),var(--rework))', 'share of agent changes with no test change'], ['var(--ok)', 'test file'], ['var(--unknown)', 'not agent-changed source']],
+  agent: () => [['linear-gradient(90deg,var(--human),var(--agent))', 'human → agent-assisted, of recorded changes'], ['var(--unknown)', 'no record']],
+  rework: s => (s === 'all'
+    ? [['linear-gradient(90deg,var(--human),var(--rework))', 'share of commits within 48h of the previous one (red ≥ 60%)'], ['var(--unknown)', 'one commit or none']]
+    : [['linear-gradient(90deg,var(--human),var(--rework))', 'follow-ups per agent commit (red ≥ 1.5)'], ['var(--unknown)', 'no agent changes']]),
+  verifier: s => [['linear-gradient(90deg,var(--human),var(--rework))', s === 'all' ? 'share of changes with no test change' : 'share of agent changes with no test change'], ['var(--ok)', 'test file'], ['var(--unknown)', s === 'all' ? 'not source code' : 'not agent-changed source']],
+  owners: () => [['var(--rework)', 'one author'], ['linear-gradient(90deg,var(--rework),var(--human))', 'two'], ['var(--human)', 'three or more'], ['var(--unknown)', 'not source code']],
+  era: () => [['linear-gradient(90deg,var(--human),var(--agent))', 'share of a file’s commits made after agents arrived'], ['var(--unknown)', 'no commits']],
 };
 
 /** @param {any} data */
@@ -27,8 +32,8 @@ let city = null;
 /** @type {any} */
 let data = null;
 
-function setLegend(/** @type {keyof typeof LEGENDS} */ layer) {
-  $('legend').innerHTML = LEGENDS[layer].map(([bg, label]) => `<span><i style="background:${bg}"></i>${esc(label)}</span>`).join('') +
+function setLegend(/** @type {string} */ layer) {
+  $('legend').innerHTML = LEGENDS[layer](city ? city.scope() : 'agent').map(([bg, label]) => `<span><i style="background:${bg}"></i>${esc(label)}</span>`).join('') +
     '<span>height = commits · footprint = lines</span>';
 }
 
@@ -36,10 +41,12 @@ function tipFor(/** @type {any} */ f, /** @type {number} */ i) {
   const share = f.covered ? `${f.agent} of ${f.covered} (${Math.round((f.agent / f.covered) * 100)}%)` : 'no record';
   const rows = [
     ['lines', f.lines], ['commits', f.commits], ['human authors', f.authors], ['agent-assisted', share],
-    ['follow-ups ≤' + data.params.reworkWindowHours + 'h', f.agent ? f.rework : '–'],
+    [`commits within ${data.params.reworkWindowHours}h of the previous`, f.followUps ?? '–'],
+    ['follow-ups after agent commits', f.agent ? f.rework : '–'],
     ['test file', f.isTest ? 'this is a test' : f.test || 'none found'],
   ];
   if (f.agent && !f.isTest && city) rows.push(['agent changes without test change', city.unchecked[i]]);
+  if (data.adoption && city && f.commits) rows.push(['commits after agents arrived', `${Math.round(city.afterShare[i] * 100)}%`]);
   rows.push(['last change', fmtDate(f.lastAt)]);
   return `<b>${esc(f.path)}</b>` + rows.map(([k, v]) => `<div class="row"><span>${esc(k)}</span><span>${esc(v)}</span></div>`).join('');
 }
@@ -66,6 +73,7 @@ function render(/** @type {any} */ d) {
   $('foot').innerHTML = `<p>Attribution sources: ${esc(src)}. A change counts as covered when a source could have recorded agent involvement; covered changes with no agent record count as human, uncovered ones are shown as no record. Rework counts later commits to the same file within ${data.params.reworkWindowHours}h of an agent-assisted commit, by anyone. Generated ${fmtDate(data.generatedAt)} by ${esc(data.generator)}.</p>`;
 
   document.querySelectorAll('.layers button').forEach(b => b.setAttribute('aria-pressed', String(b.getAttribute('data-layer') === 'agent')));
+  /** @type {HTMLElement} */ (document.querySelector('.layers [data-layer=era]')).hidden = !data.adoption;
   setLegend('agent');
 
   let hoverIdx = -1;
@@ -99,7 +107,7 @@ function render(/** @type {any} */ d) {
 document.querySelector('.layers')?.addEventListener('click', e => {
   const b = /** @type {HTMLElement} */ (e.target).closest('button');
   if (!b || !city) return;
-  const layer = /** @type {keyof typeof LEGENDS} */ (b.getAttribute('data-layer'));
+  const layer = /** @type {string} */ (b.getAttribute('data-layer'));
   document.querySelectorAll('.layers button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
   city.paint(layer);
   setLegend(layer);

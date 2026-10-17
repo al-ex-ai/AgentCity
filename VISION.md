@@ -31,7 +31,11 @@ A view that only produces a fun fact does not ship. Each insight states the ques
 | 6 | What breaks when edited alone? | Files that change together without importing each other | Refactor, or add the pair to agent context |
 | 7 | Is it getting better or worse? | Agent share and rework over time | Check whether context and rule changes work |
 
-Version 1 ships insights 1, 2 and 4. Agent share is the color layer in every view.
+Version 1 ships insights 1, 2, 4, 5 and a first form of 7 (before and after agent adoption). Agent share is the color layer in every view.
+
+### When a repository has no agent records
+
+Most repositories have none, so every insight is also computed over all changes, and agent records add a second, agent-only view on top. Without per-commit records, the first commit that added an agent instruction file (`CLAUDE.md`, `AGENTS.md`, `.cursor/`, Copilot instructions and others) marks when the team started using agents, and the periods before and after are compared. Guessing per-commit authorship from commit size or style is left out: it would be wrong often enough to blame people for work they did themselves.
 
 ## What it does not claim
 

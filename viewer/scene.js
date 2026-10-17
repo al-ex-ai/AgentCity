@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/OrbitControls.js';
 
-export const FLAG = { AGENT: 1, COVERED: 2, REWORK: 4, TEST_CHANGED: 8 };
+export const FLAG = { AGENT: 1, COVERED: 2, REWORK: 4, TEST_CHANGED: 8, FOLLOW_UP: 16 };
 const WORLD = 20;
 
 const css = getComputedStyle(document.documentElement);
@@ -66,23 +66,40 @@ export function createCity(stage, data) {
 
   // Derived per-file numbers used by layers
   const unchecked = files.map((/** @type {any} */ f) => f.log.filter((/** @type {number[]} */ e) => (e[1] & FLAG.AGENT) && !(e[1] & FLAG.TEST_CHANGED)).length);
+  const uncheckedAll = files.map((/** @type {any} */ f) => f.log.filter((/** @type {number[]} */ e) => !(e[1] & FLAG.TEST_CHANGED)).length);
   const isSource = (/** @type {string} */ path) => /\.(m?[jt]sx?|cjs|py|go|rb|java|kts?|cs|swift|rs|c|cc|cpp|h|hpp|php|scala|vue|svelte|exs?|dart|lua)$/i.test(path);
+  const adoptedAt = data.adoption ? Date.parse(data.adoption.at) : null;
+  const commitAt = data.commits.map((/** @type {any} */ c) => Date.parse(c.at));
+  const afterShare = files.map((/** @type {any} */ f) => (adoptedAt === null || !f.log.length ? 0
+    : f.log.filter((/** @type {number[]} */ e) => commitAt[e[0]] >= adoptedAt).length / f.log.length));
 
   const C = { human: color('--human'), agent: color('--agent'), unknown: color('--unknown'), rework: color('--rework'), ok: color('--ok') };
   const tmp = new THREE.Color();
+  let scope = 'agent';
   /** @type {Record<string, (f: any, i: number) => THREE.Color>} */
   const layers = {
     agent: f => (f.covered ? tmp.copy(C.human).lerp(C.agent, f.agent / f.covered) : tmp.copy(C.unknown)),
-    rework: f => (f.agent ? tmp.copy(C.human).lerp(C.rework, Math.min(1, f.rework / f.agent / 1.5)) : tmp.copy(C.unknown)),
+    rework: f => {
+      if (scope === 'all') return f.commits > 1 ? tmp.copy(C.human).lerp(C.rework, Math.min(1, (f.followUps / f.commits) / 0.6)) : tmp.copy(C.unknown);
+      return f.agent ? tmp.copy(C.human).lerp(C.rework, Math.min(1, f.rework / f.agent / 1.5)) : tmp.copy(C.unknown);
+    },
     verifier: (f, i) => {
       if (f.isTest) return tmp.copy(C.ok);
-      if (!f.agent || !isSource(f.path)) return tmp.copy(C.unknown);
-      return tmp.copy(C.human).lerp(C.rework, unchecked[i] / f.agent);
+      if (!isSource(f.path)) return tmp.copy(C.unknown);
+      if (scope === 'all') return f.commits ? tmp.copy(C.human).lerp(C.rework, uncheckedAll[i] / f.commits) : tmp.copy(C.unknown);
+      return f.agent ? tmp.copy(C.human).lerp(C.rework, unchecked[i] / f.agent) : tmp.copy(C.unknown);
     },
+    owners: f => {
+      if (!isSource(f.path) || !f.commits) return tmp.copy(C.unknown);
+      return f.authors <= 1 ? tmp.copy(C.rework) : f.authors === 2 ? tmp.copy(C.human).lerp(C.rework, 0.4) : tmp.copy(C.human);
+    },
+    era: (f, i) => (adoptedAt === null || !f.commits ? tmp.copy(C.unknown) : tmp.copy(C.human).lerp(C.agent, afterShare[i])),
   };
   let layer = 'agent';
-  function paint(name = layer) {
+  /** @param {string} [name] @param {string} [nextScope] */
+  function paint(name = layer, nextScope = scope) {
     layer = name;
+    scope = nextScope;
     files.forEach((/** @type {any} */ f, /** @type {number} */ i) => mesh.setColorAt(i, layers[layer](f, i)));
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
   }
@@ -210,6 +227,9 @@ export function createCity(stage, data) {
     home: home_,
     screenOf,
     unchecked,
+    uncheckedAll,
+    afterShare,
+    scope: () => scope,
     canvas: renderer.domElement,
   };
 }

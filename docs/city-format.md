@@ -15,6 +15,7 @@ All timestamps are ISO 8601 strings in UTC. All paths are repository-relative an
   "repo": { },
   "params": { },
   "attribution": { },
+  "adoption": { },
   "totals": { },
   "layout": { },
   "commits": [ ],
@@ -124,40 +125,59 @@ Commits referenced by files and insights, oldest first. Files and insights refer
 | `covered` | number | Covered commits touching the file |
 | `agent` | number | Agent-assisted commits touching the file |
 | `rework` | number | Commits inside the rework window after an agent-assisted commit |
+| `followUps` | number | Commits inside the rework window after any previous commit to the file |
 | `isTest` | boolean | The file is a test |
 | `test` | string or null | Path of the matching test file, if one exists |
-| `log` | array | `[commitIndex, flags]` per commit touching the file. Flag bits: 1 agent-assisted, 2 covered, 4 rework follow-up, 8 matching test changed in the same window |
+| `log` | array | `[commitIndex, flags]` per commit touching the file. Flag bits: 1 agent-assisted, 2 covered, 4 follow-up after an agent-assisted commit, 8 matching test changed within the window, 16 follow-up after any commit |
 | `x`, `y`, `w`, `h` | number | Footprint in layout units |
 
-## insights
+## adoption
 
-Findings ranked by score inside each insight type. Each one states its numbers in words and points at the commits behind it.
+When the repository contains agent instruction files, the analyzer finds the first commit that added one and compares the periods before and after it. This needs no per-commit attribution. `null` when no instruction file was ever committed.
+
+Recognized files: `CLAUDE.md`, `.claude/`, `AGENTS.md`, `.cursorrules`, `.cursor/`, `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md`, `.windsurfrules`, `.windsurf/`, `.clinerules`, `.aider*`, `GEMINI.md`, `.continue/`.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `type` | string | `review-hotspot`, `agent-rework` or `missing-verifier` |
-| `path` | string | File or folder the finding is about |
-| `score` | number | Ranking value inside its type. Not comparable across types |
+| `at` | string | Date of the first commit that added an instruction file |
+| `commit` | number | Index of that commit |
+| `tools` | string[] | Tools the instruction files belong to |
+| `markers` | object[] | `{ path, tool, since }` for instruction files present at `head` |
+| `before`, `after` | object or null | Period metrics, see below. `before` is null when agents were set up in the first commit |
+| `comparable` | boolean | Both periods have at least 10 commits |
+
+Period metrics: `from`, `to`, `commits`, `commitsPerWeek`, `medianLinesPerCommit`, `filesPerCommit`, `followUpRate` (share of file commits flagged 16), `testWithSourceRate` (share of commits touching source that also touch a test file).
+
+## insights
+
+Findings ranked by score inside each type and scope. Each one states its numbers in words and points at the commits behind it.
+
+| Field | Type | Meaning |
+|---|---|---|
+| `type` | string | `review-hotspot`, `rework`, `missing-verifier` or `single-owner` |
+| `scope` | string | `all`: computed over every change. `agent`: computed over agent-assisted changes, only present when agent records exist |
+| `path` | string | File the finding is about. `""` means the whole repository |
+| `score` | number | Ranking value inside its type and scope. Not comparable across types |
 | `summary` | string | One sentence with the numbers behind the finding |
-| `evidence` | number[] | Commit indexes that support it |
+| `evidence` | number[] | Commit indexes that support it, latest 20 |
+
+Every type has an `all` version so a repository with no agent records still gets findings. "Enough commits" below means at least 5 for `all` and at least `minAgentCommits` agent-assisted commits for `agent`.
 
 ### review-hotspot
 
-Files that change often, are large, and are mostly changed through agents.
+Large files that change often. `all`: `score = commits × log2(lines + 1)`. `agent`: the same, multiplied by `agent / covered`.
 
-`score = commits × log2(lines + 1) × agentShare`, where `agentShare = agent / covered`. Only files with at least `minAgentCommits` agent-assisted commits.
+### rework
 
-### agent-rework
-
-Files where agent-assisted commits are followed by more commits within the rework window.
-
-`score = rework / agent`, ties broken by `rework`. Only files with at least `minAgentCommits` agent-assisted commits. Evidence lists the follow-up commits.
+Files that keep getting quick follow-up commits. `all`: `score = followUps / commits`. `agent`: `score = rework / agent`. Ties broken by the count. Evidence lists the follow-up commits.
 
 ### missing-verifier
 
-Agent-changed source files without a check: either no matching test file exists, or one exists but never changed within the rework window of the file's agent-assisted commits.
+Source files whose changes come without a matching test change inside the window, or that have no test file. `score` is the number of unchecked changes. When the repository has no test files at all, one repository-level finding replaces the per-file list.
 
-`score = agent-assisted commits with no matching test change`. When the repository has no test files at all, a single repository-level finding with `path: ""` replaces the per-file list.
+### single-owner
+
+Knowledge risk. `all`: source files only one person has ever changed; when the whole repository has one author, one repository-level finding replaces the list. `agent`: files where at least 80% of recorded changes were agent-assisted and at most one human touched them.
 
 ## Compatibility
 
