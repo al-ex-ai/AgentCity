@@ -4,3 +4,4 @@ out/
 *.city.json
 .DS_Store
 Thumbs.db
+viewer/city.json
