@@ -60,7 +60,7 @@ export function computeInsights(city) {
       type: 'agent-rework',
       path: f.path,
       score: round(f.rework / f.agent),
-      summary: `${f.rework} follow-up commits within ${reworkWindowHours}h after ${f.agent} agent-assisted commits.`,
+      summary: `${f.rework} follow-up commit${f.rework === 1 ? '' : 's'} within ${reworkWindowHours}h after ${f.agent} agent-assisted commits.`,
       evidence: recent(f, FLAG.REWORK),
       _tie: f.rework,
     }))

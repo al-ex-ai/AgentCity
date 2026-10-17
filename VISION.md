@@ -90,7 +90,7 @@ For a repository given by URL, only sources 1, 2 and 4 exist. Transcripts live o
 
 ## Stack
 
-- Node.js 22 or later, built-in modules only (`child_process`, `fs`, `path`, `http`)
+- Node.js 22.4 or later, built-in modules only (`child_process`, `fs`, `path`, `http`)
 - Browser ES modules, Three.js vendored
 - `city.json` schema documented in `docs/city-format.md`
 
