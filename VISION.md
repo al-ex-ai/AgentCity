@@ -87,7 +87,7 @@ For a repository given by URL, only sources 1, 2 and 4 exist. Transcripts live o
 
 | Mode | Status | How |
 |---|---|---|
-| CLI | v1 | `npx agent-city <path or git URL>` analyzes, writes `city.json`, opens the viewer locally |
+| CLI | v1 | `npx github:al-ex-ai/AgentCity <path or git URL>` (later `npx agent-city` once on npm) analyzes, writes `city.json`, opens the viewer locally |
 | Static viewer site | v1 | GitHub Pages site that opens any `city.json` by drag and drop or link, plus a gallery of public repos |
 | GitHub Action | later | Rebuilds the city on every push and publishes to the repo's own Pages site; works for private repos |
 | Hosted "paste a URL" | maybe | Needs a server that clones untrusted repos; not planned until the cost and abuse limits are worked out |

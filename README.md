@@ -72,11 +72,11 @@ Without per-commit records, the first commit that added an agent instruction fil
 
 ```bash
 # Prerequisites: Node 22.4+, git
-npx agent-city .                                   # analyze the current repository
-npx agent-city https://github.com/owner/repo.git   # or any git URL you can clone
+npx github:al-ex-ai/AgentCity .                                   # analyze the current repository
+npx github:al-ex-ai/AgentCity https://github.com/owner/repo.git   # or any git URL you can clone
 ```
 
-The analysis runs on your machine, writes `<repo>.city.json` and opens the viewer on `http://127.0.0.1`. Nothing is uploaded.
+npx installs the tool straight from this repository, no registry account needed. The analysis runs on your machine, writes `<repo>.city.json` and opens the viewer on `http://127.0.0.1`. Nothing is uploaded.
 
 ```
 agent-city [repo] [options]
