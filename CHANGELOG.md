@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-10-17)
 
-First version.
+First version. Install with `npx github:al-ex-ai/AgentCity .` or try it at https://agentcity.al-ex.ai.
 
 - CLI: analyze a local repository or a git URL, write `city.json`, serve the viewer on 127.0.0.1
 - Attribution from git-ai notes, Claude Code transcripts and AI commit trailers; unrecorded changes stay "no record"
